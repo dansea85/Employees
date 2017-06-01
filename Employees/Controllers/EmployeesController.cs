@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services;
 using Employees.Models;
 
 namespace Employees.Controllers
@@ -80,7 +81,7 @@ namespace Employees.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public bool Edit([Bind(Include = "Id,Name,Surname,Email,CreationDate,EmployeesPositions")] Employee employee)
+        public string Edit([Bind(Include = "Id,Name,Surname,Email,CreationDate,EmployeesPositions")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -91,16 +92,16 @@ namespace Employees.Controllers
                         employeePosition.CreationDate = DateTime.Now;
                     }
                 }
-                
+
                 db.EmployeesPositions.RemoveRange(db.EmployeesPositions.Where(employeePosition => employeePosition.EmployeeId == employee.Id));
                 db.EmployeesPositions.AddRange(employee.EmployeesPositions);
 
                 db.Entry(employee).State = EntityState.Modified;
                 db.SaveChanges();
 
-                return true;
+                return "All changes saved succesfully";
             }
-            return false;
+            return "It's not been possible to save the changes";
         }
 
         // GET: Employees/Delete/5

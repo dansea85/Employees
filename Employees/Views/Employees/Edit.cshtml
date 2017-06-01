@@ -20,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Name, new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new {htmlAttributes = new { id = "name", @class = "form-control"}})
+                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {id = "name", @class = "form-control"}})
                 @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
             </div>
         </div>
@@ -28,20 +28,20 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Surname, new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Surname, new {htmlAttributes = new { id = "surname", @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger"})
+                @Html.EditorFor(model => model.Surname, new {htmlAttributes = new {id = "surname", @class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Surname, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Email, new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new {htmlAttributes = new { id = "email", @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger"})
+                @Html.EditorFor(model => model.Email, new {htmlAttributes = new {id = "email", @class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Email, "", new {@class = "text-danger"})
             </div>
         </div>
 
-        @Html.HiddenFor(model => model.CreationDate, new { id = "creationDate" })
+        @Html.HiddenFor(model => model.CreationDate, new {id = "creationDate"})
 
         <div class="form-group">
 
@@ -79,14 +79,12 @@
                             @Html.HiddenFor(modelItem => item.Id, new {id = "rowEmployeePositionId"})
                         </td>
                         <td>
-                            @Html.HiddenFor(modelItem => item.PositionId, new { id = "rowPositionId" })
+                            @Html.HiddenFor(modelItem => item.PositionId, new {id = "rowPositionId"})
                         </td>
                         <td>
-                            @Html.HiddenFor(modelItem => item.CreationDate, new { id = "rowPositioncreationDate" })
+                            @Html.HiddenFor(modelItem => item.CreationDate, new {id = "rowPositioncreationDate"})
                         </td>
                     </tr>
-                    
-                    
                 }
             </table>
         </div>
@@ -135,11 +133,11 @@
                 $('#addPositionModal').modal('hide');
                 var newRow =
                     '<tr>' +
-                    '<td>' + $('#positionId').find('option:selected').text() + '</td>' +
-                    '<td>' + $('#salary').val() + '</td>' +
-                    '<td>' + $('#startDatePicker').val() + '</td>' +
-                    '<input type="hidden" id="rowPositionId" value="' + $('#positionId').val() +'"/>' +
-                    '</tr>';
+                        '<td>' + $('#positionId').find('option:selected').text() + '</td>' +
+                        '<td>' + $('#salary').val() + '</td>' +
+                        '<td>' + $('#startDatePicker').val() + '</td>' +
+                        '<input type="hidden" id="rowPositionId" value="' + $('#positionId').val() + '"/>' +
+                        '</tr>';
 
                 $('#positionsTable tbody:last-child').append(newRow);
             };
@@ -177,16 +175,18 @@
             $('#buttonPost').click(function(event) {
 
                 var employee = new EmployeeModel();
-                
+
                 $.ajax({
                     url: "/Employees/Edit",
-                    dataType: 'json',
                     contentType: "application/json",
                     type: "POST",
                     data: JSON.stringify(employee),
-                    success: function(response) { alert('chachacha: ' + response); },
-                    failure: function (errorMessage) { alert(errorMessage); }
-                    //error: function (xmlHttpRequest, textStatus, errorThrown) { alert('Error occured: ' + textStatus + " - " + errorThrown + " - " + xmlHttpRequest.responseText); event.preventDefault(); }
+                    success: function(response) { alert('Success: ' + response); },
+                    failure: function(response) { alert('Error: ' + response); },
+                    error: function(xmlHttpRequest, textStatus, errorThrown) {
+                        alert('Error occured: ' + textStatus + " - " + errorThrown + " - " + xmlHttpRequest.responseText);
+                        event.preventDefault();
+                    }
                 });
             });
         });
