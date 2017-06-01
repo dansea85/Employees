@@ -1,0 +1,196 @@
+﻿@using Employees.Models
+@model Employees.Models.Employee
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm(new {@id = "editEmployeeForm"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Employee</h4>
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        @Html.HiddenFor(model => model.Id, new {id = "employeeId"})
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new {htmlAttributes = new { id = "name", @class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Surname, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Surname, new {htmlAttributes = new { id = "surname", @class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new {htmlAttributes = new { id = "email", @class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger"})
+            </div>
+        </div>
+
+        @Html.HiddenFor(model => model.CreationDate, new { id = "creationDate" })
+
+        <div class="form-group">
+
+            <p>
+                <a href="#" id="addPositionLink">Add Position</a>
+            </p>
+
+            <table class="table" id="positionsTable">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmployeesPositions.FirstOrDefault().Position.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmployeesPositions.FirstOrDefault().Salary)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmployeesPositions.FirstOrDefault().StartDate)
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.EmployeesPositions)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Position.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Salary)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.HiddenFor(modelItem => item.Id, new {id = "rowEmployeePositionId"})
+                        </td>
+                        <td>
+                            @Html.HiddenFor(modelItem => item.PositionId, new { id = "rowPositionId" })
+                        </td>
+                        <td>
+                            @Html.HiddenFor(modelItem => item.CreationDate, new { id = "rowPositioncreationDate" })
+                        </td>
+                    </tr>
+                    
+                    
+                }
+            </table>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Save" class="btn btn-default" id="buttonPost"/>*@
+                <button type="button" class="btn btn-default" id="buttonPost">Save</button>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="addPositionModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @Html.Partial("AddPosition", new EmployeesPosition())
+        </div>
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+
+            $('#addPositionLink').click(function() {
+
+                var options = { "backdrop": "static", keyboard: true };
+                $('#addPositionModal').modal(options);
+                $('#addPositionModal').modal('show');
+                $('#addPositionModal').resetValues();
+            });
+
+            $.fn.addPosition = function() {
+                $('#addPositionModal').modal('hide');
+                var newRow =
+                    '<tr>' +
+                    '<td>' + $('#positionId').find('option:selected').text() + '</td>' +
+                    '<td>' + $('#salary').val() + '</td>' +
+                    '<td>' + $('#startDatePicker').val() + '</td>' +
+                    '<input type="hidden" id="rowPositionId" value="' + $('#positionId').val() +'"/>' +
+                    '</tr>';
+
+                $('#positionsTable tbody:last-child').append(newRow);
+            };
+
+
+            function EmployeeModel() {
+                var self = this;
+                self.Id = $('#employeeId').val();
+                self.Name = $('#name').val();
+                self.Surname = $('#surname').val();
+                self.Email = $('#email').val();
+                self.CreationDate = $('#creationDate').val();
+
+                var positions = new Array();
+                var count = 0;
+
+                $("#positionsTable tr:gt(0)").each(function() {
+                    var thisRow = $(this);
+
+                    positions[count] = {};
+                    positions[count]['employeeId'] = $('#employeeId').val();
+                    positions[count]['positionId'] = thisRow.find('#rowEmployeePositionId').val();
+                    positions[count]['salary'] = $.trim(thisRow.find('td:eq(1)').html());
+                    positions[count]['startDate'] = $.trim(thisRow.find('td:eq(2)').html());
+                    positions[count]['creationDate'] = thisRow.find('#rowPositioncreationDate').val();
+                    positions[count]['positionId'] = thisRow.find('#rowPositionId').val();
+
+                    count++;
+                });
+
+                self.EmployeesPositions = positions;
+            };
+
+
+            $('#buttonPost').click(function(event) {
+
+                var employee = new EmployeeModel();
+                
+                $.ajax({
+                    url: "/Employees/Edit",
+                    dataType: 'json',
+                    contentType: "application/json",
+                    type: "POST",
+                    data: JSON.stringify(employee),
+                    success: function(response) { alert('chachacha: ' + response); },
+                    failure: function (errorMessage) { alert(errorMessage); }
+                    //error: function (xmlHttpRequest, textStatus, errorThrown) { alert('Error occured: ' + textStatus + " - " + errorThrown + " - " + xmlHttpRequest.responseText); event.preventDefault(); }
+                });
+            });
+        });
+
+    </script>
+
+}
