@@ -81,7 +81,7 @@ namespace Employees.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public string Edit([Bind(Include = "Id,Name,Surname,Email,CreationDate,EmployeesPositions")] Employee employee)
+        public bool Edit([Bind(Include = "Id,Name,Surname,Email,CreationDate,EmployeesPositions")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -99,9 +99,9 @@ namespace Employees.Controllers
                 db.Entry(employee).State = EntityState.Modified;
                 db.SaveChanges();
 
-                return "All changes saved succesfully";
+                return true;
             }
-            return "It's not been possible to save the changes";
+            return false;
         }
 
         // GET: Employees/Delete/5

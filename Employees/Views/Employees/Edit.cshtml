@@ -13,35 +13,35 @@
 
     <div class="form-horizontal">
         <h4>Employee</h4>
-        <hr/>
-        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
-        @Html.HiddenFor(model => model.Id, new {id = "employeeId"})
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id, new { id = "employeeId" })
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Name, new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {id = "name", @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { id = "name", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Surname, new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Surname, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Surname, new {htmlAttributes = new {id = "surname", @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Surname, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { id = "surname", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Email, new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new {htmlAttributes = new {id = "email", @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.Email, "", new {@class = "text-danger"})
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { id = "email", @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        @Html.HiddenFor(model => model.CreationDate, new {id = "creationDate"})
+        @Html.HiddenFor(model => model.CreationDate, new { id = "creationDate" })
 
         <div class="form-group">
 
@@ -76,13 +76,13 @@
                             @Html.DisplayFor(modelItem => item.StartDate)
                         </td>
                         <td>
-                            @Html.HiddenFor(modelItem => item.Id, new {id = "rowEmployeePositionId"})
+                            @Html.HiddenFor(modelItem => item.Id, new { id = "rowEmployeePositionId" })
                         </td>
                         <td>
-                            @Html.HiddenFor(modelItem => item.PositionId, new {id = "rowPositionId"})
+                            @Html.HiddenFor(modelItem => item.PositionId, new { id = "rowPositionId" })
                         </td>
                         <td>
-                            @Html.HiddenFor(modelItem => item.CreationDate, new {id = "rowPositioncreationDate"})
+                            @Html.HiddenFor(modelItem => item.CreationDate, new { id = "rowPositioncreationDate" })
                         </td>
                     </tr>
                 }
@@ -95,6 +95,9 @@
                 <button type="button" class="btn btn-default" id="buttonPost">Save</button>
             </div>
         </div>
+
+        <div id="resultMessage" style="display: none;"></div>
+
     </div>
 }
 
@@ -181,7 +184,7 @@
                     contentType: "application/json",
                     type: "POST",
                     data: JSON.stringify(employee),
-                    success: function(response) { alert('Success: ' + response); },
+                    success: function (response) { displayMessage(response); },
                     failure: function(response) { alert('Error: ' + response); },
                     error: function(xmlHttpRequest, textStatus, errorThrown) {
                         alert('Error occured: ' + textStatus + " - " + errorThrown + " - " + xmlHttpRequest.responseText);
@@ -189,6 +192,20 @@
                     }
                 });
             });
+
+
+            function displayMessage(result) {
+
+                var success = '<div class="alert alert-success"><strong>Success!</strong></div>';
+                var error = '<div class="alert alert-danger"><strong>Error!</strong> There was a problem saving your changes, please try again</div>';
+
+                var message;
+                if (result) message = success;
+                else message = error;
+
+                $('#resultMessage').html(message).fadeIn().delay(5000).fadeOut();
+            }
+
         });
 
     </script>
